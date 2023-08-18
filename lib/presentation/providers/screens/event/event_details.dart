@@ -1,8 +1,9 @@
 import 'package:estrailurtarrak/presentation/providers/user_provider.dart';
-import 'package:estrailurtarrak/presentation/users/user_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gradient_borders/gradient_borders.dart';
+
+enum ParticipantType { participant, spectator }
 
 class EventDetails extends StatelessWidget {
   const EventDetails({super.key});
@@ -30,10 +31,12 @@ class EventDetails extends StatelessWidget {
                   const Expanded(
                     child: Column(children: [
                       ParticipantInformation(
+                        participantType: ParticipantType.participant,
                         title: 'Partaideak',
                       ),
                       SizedBox(height: 20),
                       ParticipantInformation(
+                        participantType: ParticipantType.spectator,
                         title: 'Animatzaileak',
                       ),
                     ]),
@@ -46,16 +49,18 @@ class EventDetails extends StatelessWidget {
 
 class ParticipantInformation extends StatelessWidget {
   final String title;
-
+  final ParticipantType participantType;
+    
   const ParticipantInformation({
     super.key,
     required this.title,
+    required this.participantType,
   });
 
   @override
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
-
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
@@ -81,10 +86,11 @@ class ParticipantInformation extends StatelessWidget {
           Expanded(
               child: ListView.builder(
             controller: userProvider.chatScrollController,
-            itemCount: userProvider.userList.length,
+            itemCount: (participantType == ParticipantType.participant) ? userProvider.participantList.length : userProvider.spectatorList.length ,
             itemBuilder: (context, index) {
-              final UserBox user = userProvider.userList[index];
-              return user;
+              return ((participantType == ParticipantType.participant) ?
+              (userProvider.participantList[index] ) :
+              (userProvider.spectatorList[index] ));
             },
           ))
         ],
