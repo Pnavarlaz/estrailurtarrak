@@ -1,4 +1,4 @@
-import 'package:estrailurtarrak/presentation/providers/user_provider.dart';
+import 'package:estrailurtarrak/helpers/get_event_participants_answer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gradient_borders/gradient_borders.dart';
@@ -10,6 +10,8 @@ class EventDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final eventParticipants = context.watch<GetEventParticipantsAnswer>();
+    eventParticipants.getEventParticipants(2);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hondarribiako Triatloia'),
@@ -28,16 +30,18 @@ class EventDetails extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Expanded(
+                  Expanded(
                     child: Column(children: [
                       ParticipantInformation(
                         participantType: ParticipantType.participant,
                         title: 'Partaideak',
+                        participantsAnswer: eventParticipants,
                       ),
                       SizedBox(height: 20),
                       ParticipantInformation(
                         participantType: ParticipantType.spectator,
                         title: 'Animatzaileak',
+                        participantsAnswer: eventParticipants,
                       ),
                     ]),
                   )
@@ -50,17 +54,16 @@ class EventDetails extends StatelessWidget {
 class ParticipantInformation extends StatelessWidget {
   final String title;
   final ParticipantType participantType;
-    
+  final GetEventParticipantsAnswer participantsAnswer;
   const ParticipantInformation({
     super.key,
     required this.title,
     required this.participantType,
+    required this.participantsAnswer,
   });
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.watch<UserProvider>();
-    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
@@ -85,12 +88,14 @@ class ParticipantInformation extends StatelessWidget {
           ParticipantInformationHeader(title: title),
           Expanded(
               child: ListView.builder(
-            controller: userProvider.chatScrollController,
-            itemCount: (participantType == ParticipantType.participant) ? userProvider.participantList.length : userProvider.spectatorList.length ,
+            controller: participantsAnswer.chatScrollController,
+            itemCount: (participantType == ParticipantType.participant)
+                ? participantsAnswer.userProvider.participantList.length
+                : participantsAnswer.userProvider.spectatorList.length,
             itemBuilder: (context, index) {
-              return ((participantType == ParticipantType.participant) ?
-              (userProvider.participantList[index] ) :
-              (userProvider.spectatorList[index] ));
+              return ((participantType == ParticipantType.participant)
+                  ? (participantsAnswer.userProvider.participantList[index])
+                  : (participantsAnswer.userProvider.spectatorList[index]));
             },
           ))
         ],
