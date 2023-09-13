@@ -37,10 +37,17 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^6.0.5
   gradient_borders: ^1.0.0
+  flutter_launcher_icons: ^0.13.1
+  dio: ^5.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/EstrailurtarrakLogo.jpg"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
