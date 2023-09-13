@@ -1,5 +1,6 @@
 import 'package:estrailurtarrak/helpers/get_event_participants_answer.dart';
 import 'package:estrailurtarrak/presentation/providers/screens/event/event_details.dart';
+import 'package:estrailurtarrak/presentation/providers/screens/event/event_list.dart';
 import 'package:estrailurtarrak/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         title: 'Estrailurtarrak',
         theme: AppTheme(selectedColor: 0).theme(),
         debugShowCheckedModeBanner: false,
-        home: const EventDetails(),
+        home: const EventList(),
       ),
     );
   }
