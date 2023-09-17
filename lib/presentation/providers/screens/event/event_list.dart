@@ -1,4 +1,5 @@
 import 'package:estrailurtarrak/domain/entities/estrailurtarrakEvent.dart';
+import 'package:estrailurtarrak/presentation/providers/screens/event/add_new_event.dart';
 import 'package:estrailurtarrak/presentation/providers/screens/event/event_details.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
@@ -46,7 +47,15 @@ class EventList extends StatelessWidget {
                       eventLocation: 'Mendian baitare',
                       datetime: DateTime(2080, 12, 31),
                       eventType: 4),
-                ])
+                ]),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddNewEvent()));
+                    },
+                    child: Icon(Icons.add))
               ])),
         ));
   }
