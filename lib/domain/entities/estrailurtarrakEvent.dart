@@ -24,6 +24,7 @@ class EstrailurtarrakEventType {
     'Triatloia',
     'Trail'
   ];
+  
   static List<LinearGradient> eventColors = [
     LinearGradient(
         colors: [Colors.red.shade700, Colors.red.shade100],

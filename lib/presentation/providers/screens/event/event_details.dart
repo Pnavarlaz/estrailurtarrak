@@ -77,9 +77,11 @@ class ParticipantInformation extends StatelessWidget {
         ],
         border: const GradientBoxBorder(
             gradient: LinearGradient(
+              begin: Alignment.bottomLeft,
+              end: Alignment.bottomRight,
               colors: [Color(0xFF9747FF), Color(0xFF00DADA)],
             ),
-            width: 3),
+            width: 1.5),
         borderRadius: BorderRadius.circular(15),
       ),
       height: 300,
@@ -120,9 +122,9 @@ class ParticipantInformationHeader extends StatelessWidget {
             textAlign: TextAlign.left,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         const Spacer(),
-        IconButton(
+        ElevatedButton(
             onPressed: () {},
-            icon: const Icon(
+            child: const Icon(
               Icons.add_circle_outline_rounded,
               size: 30,
               color: Color(0xFF9747FF),

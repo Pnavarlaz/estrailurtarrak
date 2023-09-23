@@ -17,45 +17,57 @@ class EventList extends StatelessWidget {
         ),
         body: SafeArea(
           child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(children: [
-                Column(children: [
-                  EventInformationBox(
-                    eventName: 'Hondarribiako Triatloia',
-                    eventLocation: 'Hondarribia',
-                    datetime: DateTime(2023, 05, 06, 15, 00),
-                    eventType: 3,
+                Expanded(
+                  child: Column(children: [
+                    EventInformationBox(
+                      eventName: 'Hondarribiako Triatloia',
+                      eventLocation: 'Hondarribia',
+                      datetime: DateTime(2023, 05, 06, 15, 00),
+                      eventType: 3,
+                    ),
+                    EventInformationBox(
+                      eventName: 'Behobia SS',
+                      eventLocation: 'Donostia',
+                      datetime: DateTime(2023, 11, 12, 9, 30),
+                      eventType: 0,
+                    ),
+                    EventInformationBox(
+                        eventName: 'Igeriketa Froga',
+                        eventLocation: 'Igerilekuan',
+                        datetime: DateTime(2023, 12, 24),
+                        eventType: 1),
+                    EventInformationBox(
+                        eventName: 'Bizikleta Karrera',
+                        eventLocation: 'Mendian',
+                        datetime: DateTime(2024, 01, 01),
+                        eventType: 2),
+                    EventInformationBox(
+                        eventName: 'Trail karrera',
+                        eventLocation: 'Mendian baitare',
+                        datetime: DateTime(2080, 12, 31),
+                        eventType: 4),
+                  ]),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      )
+                    )
                   ),
-                  EventInformationBox(
-                    eventName: 'Behobia SS',
-                    eventLocation: 'Donostia',
-                    datetime: DateTime(2023, 11, 12, 9, 30),
-                    eventType: 0,
-                  ),
-                  EventInformationBox(
-                      eventName: 'Igeriketa Froga',
-                      eventLocation: 'Igerilekuan',
-                      datetime: DateTime(2023, 12, 24),
-                      eventType: 1),
-                  EventInformationBox(
-                      eventName: 'Bizikleta Karrera',
-                      eventLocation: 'Mendian',
-                      datetime: DateTime(2024, 01, 01),
-                      eventType: 2),
-                  EventInformationBox(
-                      eventName: 'Trail karrera',
-                      eventLocation: 'Mendian baitare',
-                      datetime: DateTime(2080, 12, 31),
-                      eventType: 4),
-                ]),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddNewEvent()));
-                    },
-                    child: Icon(Icons.add))
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddNewEvent()));
+                  },
+                  child: Icon(Icons.add)),
+                )
               ])),
         ));
   }
