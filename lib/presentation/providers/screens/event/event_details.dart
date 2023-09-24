@@ -1,4 +1,4 @@
-import 'package:estrailurtarrak/helpers/get_event_participants_answer.dart';
+import 'package:estrailurtarrak/helpers/api_calls.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gradient_borders/gradient_borders.dart';
@@ -6,12 +6,16 @@ import 'package:gradient_borders/gradient_borders.dart';
 enum ParticipantType { participant, spectator }
 
 class EventDetails extends StatelessWidget {
-  const EventDetails({super.key});
+  final int eventID;
+  const EventDetails({
+    super.key,
+    required this.eventID});
+    
 
   @override
   Widget build(BuildContext context) {
     final eventParticipants = context.watch<GetEventParticipantsAnswer>();
-    eventParticipants.getEventParticipants(2);
+    eventParticipants.getEventParticipants(eventID);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hondarribiako Triatloia'),
@@ -123,9 +127,14 @@ class ParticipantInformationHeader extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         const Spacer(),
         ElevatedButton(
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ))),
             onPressed: () {},
             child: const Icon(
-              Icons.add_circle_outline_rounded,
+              Icons.add,
               size: 30,
               color: Color(0xFF9747FF),
             ))

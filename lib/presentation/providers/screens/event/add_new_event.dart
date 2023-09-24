@@ -12,6 +12,8 @@ class AddNewEvent extends StatefulWidget {
 class _AddNewEventState extends State<AddNewEvent> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _eventTime = TimeOfDay.now();
+  final _nameKey = GlobalKey<FormState>();
+  final _locationKey = GlobalKey<FormState>();
 
   void _showTimePicker() {
     showTimePicker(
@@ -26,6 +28,9 @@ class _AddNewEventState extends State<AddNewEvent> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController _nameTextController = TextEditingController();
+    TextEditingController _locationTextController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ekitaldi berria'),
@@ -40,17 +45,35 @@ class _AddNewEventState extends State<AddNewEvent> {
               child: Column(
                 children: [
                   TextFormField(
+                      key: _nameKey,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Izena jarri";
+                        }
+                        return "";
+                      },
+                      controller: _nameTextController,
                       decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Ekitaldiaren izena',
-                  )),
+                        border: OutlineInputBorder(),
+                        labelText: 'Ekitaldiaren izena',
+                        errorText: 'Izena beharrezkoa da'
+                      )),
                   SizedBox(
                     height: 20,
                   ),
                   TextFormField(
+                    key: _locationKey,
+                    validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Izena jarri";
+                        }
+                        return "";
+                      },
+                    controller: _locationTextController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Kokalekua',
+                      errorText: 'Kokalekua beharrezkoa da'
                     ),
                   ),
                   SizedBox(
@@ -74,10 +97,8 @@ class _AddNewEventState extends State<AddNewEvent> {
                                 });
                             },
                             style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)
-                              )
-                            ),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0))),
                             child: const Icon(Icons.calendar_month)),
                       ),
                       SizedBox(
@@ -101,10 +122,8 @@ class _AddNewEventState extends State<AddNewEvent> {
                               _showTimePicker();
                             },
                             style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)
-                              )
-                            ),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0))),
                             child: Icon(Icons.access_time_filled_rounded)),
                       ),
                       SizedBox(
@@ -122,20 +141,21 @@ class _AddNewEventState extends State<AddNewEvent> {
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
-                style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
-                  )
-                )
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SelectEventType()));
-              },
-              child: Text('Hurrengoa')),
+                  ))),
+                  onPressed: () {
+                    if (_locationTextController.text.isNotEmpty &
+                        _nameTextController.text.isNotEmpty) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SelectEventType()));
+                    }
+                  },
+                  child: Text('Hurrengoa')),
             )
           ],
         ),
