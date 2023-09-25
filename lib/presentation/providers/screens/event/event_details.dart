@@ -1,24 +1,47 @@
 import 'package:estrailurtarrak/helpers/api_calls.dart';
+import 'package:estrailurtarrak/presentation/users/user_box.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 
 enum ParticipantType { participant, spectator }
 
-class EventDetails extends StatelessWidget {
+class EventDetails extends StatefulWidget {
+  final String eventName;
   final int eventID;
-  const EventDetails({
-    super.key,
-    required this.eventID});
-    
+  const EventDetails(
+      {super.key, required this.eventID, required this.eventName});
+
+  @override
+  State<EventDetails> createState() => _EventDetailsState();
+}
+
+class _EventDetailsState extends State<EventDetails> {
+  late List<UserBox> _participantList;
+  late List<UserBox> _observerList;
+  bool answerReceived = false;
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+  void _getData() async {
+    late List<UserBox> _intparticipantList;
+    late List<UserBox> _intobserverList;
+    (_intparticipantList, _intobserverList) =
+        await ApiService().getEventParticipants(widget.eventID);
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
+          answerReceived = true;
+          _participantList = _intparticipantList;
+          _observerList = _intobserverList;
+        }));
+  }
 
   @override
   Widget build(BuildContext context) {
-    final eventParticipants = context.watch<GetEventParticipantsAnswer>();
-    eventParticipants.getEventParticipants(eventID);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hondarribiako Triatloia'),
+        title: Text(widget.eventName),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -26,26 +49,31 @@ class EventDetails extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      'https://www.hondarribia.eus/documents/124308/124935/Hondartza/8e7d0e0a-7675-48d0-b891-adbe801a2e13?t=1467040014000',
-                      alignment: Alignment.center,
-                    ),
-                  ),
+                  // ClipRRect(
+                  //   borderRadius: BorderRadius.circular(10),
+                  //   child: Image.network(
+                  //     'https://www.hondarribia.eus/documents/124308/124935/Hondartza/8e7d0e0a-7675-48d0-b891-adbe801a2e13?t=1467040014000',
+                  //     alignment: Alignment.center,
+                  //   ),
+                  // ),
                   const SizedBox(height: 20),
                   Expanded(
-                    child: Column(children: [
+                    child: 
+                    (false == answerReceived) ?
+                    const Center(
+                        child: CircularProgressIndicator(),
+                      ) :
+                    Column(children: [
                       ParticipantInformation(
                         participantType: ParticipantType.participant,
                         title: 'Partaideak',
-                        participantsAnswer: eventParticipants,
+                        participantsAnswer: _participantList,
                       ),
                       SizedBox(height: 20),
                       ParticipantInformation(
                         participantType: ParticipantType.spectator,
                         title: 'Animatzaileak',
-                        participantsAnswer: eventParticipants,
+                        participantsAnswer: _observerList,
                       ),
                     ]),
                   )
@@ -58,7 +86,7 @@ class EventDetails extends StatelessWidget {
 class ParticipantInformation extends StatelessWidget {
   final String title;
   final ParticipantType participantType;
-  final GetEventParticipantsAnswer participantsAnswer;
+  final List<UserBox>? participantsAnswer;
   const ParticipantInformation({
     super.key,
     required this.title,
@@ -94,14 +122,9 @@ class ParticipantInformation extends StatelessWidget {
           ParticipantInformationHeader(title: title),
           Expanded(
               child: ListView.builder(
-            controller: participantsAnswer.chatScrollController,
-            itemCount: (participantType == ParticipantType.participant)
-                ? participantsAnswer.userProvider.participantList.length
-                : participantsAnswer.userProvider.spectatorList.length,
+            itemCount: participantsAnswer!.length,
             itemBuilder: (context, index) {
-              return ((participantType == ParticipantType.participant)
-                  ? (participantsAnswer.userProvider.participantList[index])
-                  : (participantsAnswer.userProvider.spectatorList[index]));
+              return (participantsAnswer![index]);
             },
           ))
         ],

@@ -135,6 +135,7 @@ class _EventInformationBoxState extends State<EventInformationBox> {
                 MaterialPageRoute(
                     builder: (context) => EventDetails(
                           eventID: widget.eventID,
+                          eventName: widget.eventName,
                         )));
           },
           child: Row(
