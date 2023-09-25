@@ -152,7 +152,7 @@ class _AddNewEventState extends State<AddNewEvent> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SelectEventType()));
+                              builder: (context) => SelectEventType(eventName: _nameTextController.text, eventLocation: _locationTextController.text, eventDate: _selectedDate, eventTime: _eventTime,)));
                     }
                   },
                   child: Text('Hurrengoa')),

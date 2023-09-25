@@ -1,8 +1,21 @@
 import 'package:estrailurtarrak/domain/entities/estrailurtarrakEvent.dart';
+import 'package:estrailurtarrak/helpers/api_calls.dart';
+import 'package:estrailurtarrak/presentation/providers/screens/event/event_list.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class SelectEventType extends StatefulWidget {
-  const SelectEventType({super.key});
+  final String eventName;
+  final String eventLocation;
+  final DateTime eventDate;
+  final TimeOfDay eventTime;
+
+  const SelectEventType(
+      {super.key,
+      required this.eventName,
+      required this.eventLocation,
+      required this.eventDate,
+      required this.eventTime});
 
   @override
   State<SelectEventType> createState() => _SelectEventTypeState();
@@ -11,6 +24,7 @@ class SelectEventType extends StatefulWidget {
 class _SelectEventTypeState extends State<SelectEventType> {
   final TextEditingController eventController = TextEditingController();
   EstrailurtarrakEventType? selectedEvent;
+  bool eventTypeSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,37 +55,48 @@ class _SelectEventTypeState extends State<SelectEventType> {
         child: Column(
           children: [
             Expanded(
-              child: Column(
-                children : [
-                  Align(
-                    child: DropdownMenu<EstrailurtarrakEventType>(
-                      dropdownMenuEntries: eventTypeEntries,  
-                      hintText: 'Ekitaldi mota aukeratu',
-                      enableSearch: false,
-                      label: const Text('Ekitaldi mota'),
-                      controller: eventController,
-                      onSelected: (EstrailurtarrakEventType? eventType) {
-                        setState(() {
-                          selectedEvent = eventType;
-                        });
-                      },
-                    ),
-                  )
-                ]
-              ),
+              child: Column(children: [
+                Align(
+                  child: DropdownMenu<EstrailurtarrakEventType>(
+                    dropdownMenuEntries: eventTypeEntries,
+                    hintText: 'Ekitaldi mota aukeratu',
+                    enableSearch: false,
+                    label: const Text('Ekitaldi mota'),
+                    controller: eventController,
+                    onSelected: (EstrailurtarrakEventType? eventType) {
+                      setState(() {
+                        selectedEvent = eventType;
+                        eventTypeSelected = true;
+                      });
+                    },
+                  ),
+                )
+              ]),
             ),
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
-                style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
-                  )
-                )
-              ),
-              onPressed: () {},
-              child: Text('Ekitaldia sortu')),
+                  ))),
+                  onPressed: () {
+                    if (eventTypeSelected) {
+                      ApiService().addNewEvent(
+                          widget.eventName,
+                          widget.eventLocation,
+                          DateFormat.yMd().format(widget.eventDate),
+                          widget.eventTime.hour.toString() +
+                              ":" +
+                              widget.eventTime.minute.toString(),
+                          selectedEvent!.eventType);
+                      Navigator.push(
+                        context,
+                          MaterialPageRoute(builder: (context) => EventList()));
+                    }
+                  },
+                  child: Text('Ekitaldia sortu')),
             )
           ],
         ),

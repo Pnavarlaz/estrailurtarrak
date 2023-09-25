@@ -4,12 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:estrailurtarrak/infrastructure/models/get_event_participants_model.dart';
 import 'package:estrailurtarrak/presentation/providers/user_provider.dart';
 import 'package:estrailurtarrak/presentation/users/user_box.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 final String baseUrl = 'http://192.168.1.137:5000/';
 final String eventuser = 'eventuser';
 final String events = 'events';
+final String event = 'event';
 
 class GetEventParticipantsAnswer extends ChangeNotifier {
   final ScrollController chatScrollController = ScrollController();
@@ -81,5 +82,23 @@ class ApiService {
     final getEventParticipant = GetEventParticipants.fromJson(response.data);
     userProvider.updateUsers(getEventParticipant);
     return (userProvider.participantList, userProvider.spectatorList);
+  }
+
+  Future<bool> addNewEvent(String eventName, String eventLocation,
+      String eventDate, String eventTime, int eventType) async {
+    final _queryParameters = {
+      "name": eventName,
+      "location": eventLocation,
+      "date": eventDate,
+      "time": eventTime,
+      "type" : eventType,
+    };
+
+    final response =
+        await _dio.post(baseUrl + event, queryParameters: _queryParameters);
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
   }
 }
