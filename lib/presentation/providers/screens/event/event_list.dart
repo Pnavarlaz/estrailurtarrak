@@ -1,6 +1,7 @@
 import 'package:estrailurtarrak/helpers/api_calls.dart';
 import 'package:estrailurtarrak/presentation/events/event_presentations.dart';
 import 'package:estrailurtarrak/presentation/providers/screens/event/add_new_event.dart';
+import 'package:estrailurtarrak/presentation/providers/screens/users/user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -103,7 +104,9 @@ class EventListBottomRow extends StatelessWidget {
                           RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ))),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => UserList()));
+                  },
                   child: Row(
                     children: [
                       Icon(Icons.person),

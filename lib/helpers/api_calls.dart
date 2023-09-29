@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 final String baseUrl = 'http://192.168.1.137:5000/';
+final String users = 'users';
 final String eventuser = 'eventuser';
 final String events = 'events';
 final String event = 'event';
@@ -59,6 +60,36 @@ class GetEvents {
       };
 }
 
+List<GetUsers> getUsersFromJson(String str) =>
+    List<GetUsers>.from(json.decode(str).map((x) => GetUsers.fromJson(x)));
+
+String getUsersToJson(List<GetUsers> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class GetUsers {
+  final String colErabiltzaileAbizena;
+  final String colErabiltzaileIzena;
+  final int colUserId;
+
+  GetUsers({
+    required this.colErabiltzaileAbizena,
+    required this.colErabiltzaileIzena,
+    required this.colUserId,
+  });
+
+  factory GetUsers.fromJson(Map<String, dynamic> json) => GetUsers(
+        colErabiltzaileAbizena: json["col_erabiltzaile_abizena"],
+        colErabiltzaileIzena: json["col_erabiltzaile_izena"],
+        colUserId: json["col_userID"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "col_erabiltzaile_abizena": colErabiltzaileAbizena,
+        "col_erabiltzaile_izena": colErabiltzaileIzena,
+        "col_userID": colUserId,
+      };
+}
+
 class ApiService {
   final _dio = Dio();
   final UserProvider userProvider = UserProvider();
@@ -91,7 +122,7 @@ class ApiService {
       "location": eventLocation,
       "date": eventDate,
       "time": eventTime,
-      "type" : eventType,
+      "type": eventType,
     };
 
     final response =
@@ -100,5 +131,15 @@ class ApiService {
       return true;
     }
     return false;
+  }
+
+  Future<List<GetUsers>?> getUsers() async {
+    var url = Uri.parse(baseUrl + users);
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<GetUsers> _users = getUsersFromJson(response.body);
+        return _users;
+      }
+    return null;
   }
 }
