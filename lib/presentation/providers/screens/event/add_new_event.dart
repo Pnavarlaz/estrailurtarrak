@@ -1,3 +1,4 @@
+
 import 'package:estrailurtarrak/presentation/providers/screens/event/select_event_type.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +15,7 @@ class _AddNewEventState extends State<AddNewEvent> {
   TimeOfDay _eventTime = TimeOfDay.now();
   final _nameKey = GlobalKey<FormState>();
   final _locationKey = GlobalKey<FormState>();
+
 
   void _showTimePicker() {
     showTimePicker(
@@ -48,15 +50,14 @@ class _AddNewEventState extends State<AddNewEvent> {
                       key: _nameKey,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Izena jarri";
+                          return "Izena beharrazekoa da";
                         }
-                        return "";
+                        return null;
                       },
                       controller: _nameTextController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Ekitaldiaren izena',
-                        errorText: 'Izena beharrezkoa da'
                       )),
                   SizedBox(
                     height: 20,
@@ -65,15 +66,14 @@ class _AddNewEventState extends State<AddNewEvent> {
                     key: _locationKey,
                     validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Izena jarri";
+                          return "Kokalekua beharrezkoa da";
                         }
-                        return "";
+                        return null;
                       },
                     controller: _locationTextController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Kokalekua',
-                      errorText: 'Kokalekua beharrezkoa da'
                     ),
                   ),
                   SizedBox(
@@ -147,8 +147,7 @@ class _AddNewEventState extends State<AddNewEvent> {
                     borderRadius: BorderRadius.circular(4),
                   ))),
                   onPressed: () {
-                    if (_locationTextController.text.isNotEmpty &
-                        _nameTextController.text.isNotEmpty) {
+                    if (_nameTextController.text.isNotEmpty && _locationTextController.text.isNotEmpty) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(

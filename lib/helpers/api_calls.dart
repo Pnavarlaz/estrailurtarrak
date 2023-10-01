@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 final String baseUrl = 'http://192.168.1.137:5000/';
+final String user = 'user';
 final String users = 'users';
 final String eventuser = 'eventuser';
 final String events = 'events';
@@ -133,13 +134,27 @@ class ApiService {
     return false;
   }
 
+  Future<bool> addNewUser(String name, String surname) async {
+    final _queryParameters = {
+      "name": name,
+      "surname": surname,
+    };
+
+    final response =
+        await _dio.post(baseUrl + user, queryParameters: _queryParameters);
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
+
   Future<List<GetUsers>?> getUsers() async {
     var url = Uri.parse(baseUrl + users);
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        List<GetUsers> _users = getUsersFromJson(response.body);
-        return _users;
-      }
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      List<GetUsers> _users = getUsersFromJson(response.body);
+      return _users;
+    }
     return null;
   }
 }

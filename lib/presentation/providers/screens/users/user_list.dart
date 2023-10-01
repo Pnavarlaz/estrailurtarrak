@@ -1,4 +1,5 @@
 import 'package:estrailurtarrak/helpers/api_calls.dart';
+import 'package:estrailurtarrak/presentation/providers/screens/users/add_new_user.dart';
 import 'package:estrailurtarrak/presentation/users/user_box.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +44,6 @@ class _UserListState extends State<UserList> {
   Widget build(BuildContext context) {
     final ScrollController _userScrollController = ScrollController();
 
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Erabiltzaileak'),
@@ -54,18 +54,18 @@ class _UserListState extends State<UserList> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           children: [
-        _userBox.isEmpty
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Expanded(
-              child: ListView.builder(
-                  controller: _userScrollController,
-                  itemCount: _userBox.length,
-                  itemBuilder: ((context, index) {
-                    return (_userBox[index]);
-                  })),
-            ),
+            _userBox.isEmpty
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                        controller: _userScrollController,
+                        itemCount: _userBox.length,
+                        itemBuilder: ((context, index) {
+                          return (_userBox[index]);
+                        })),
+                  ),
             UserListButtons(),
           ],
         ),
@@ -86,24 +86,23 @@ class UserListButtons extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
               ))),
-            child: Row(
-              children: [
-                Icon(Icons.calendar_month_rounded),
-                SizedBox(
-                  width: 5,
-                ),
-                Text('Ekitaldiak')
-              ],
-            )
-          ),
+              child: Row(
+                children: [
+                  Icon(Icons.calendar_month_rounded),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text('Ekitaldiak')
+                ],
+              )),
         ),
         Expanded(child: SizedBox()),
         Align(
@@ -115,10 +114,12 @@ class UserListButtons extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ))),
               onPressed: () {
-                
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddNewUser()));
               },
               child: Icon(Icons.person_add_alt_1)),
         ),
-      ],);
+      ],
+    );
   }
 }
