@@ -19,16 +19,19 @@ class _UserListState extends State<UserList> {
     _getData();
   }
 
+
   void _convertToUserBox(List<GetUsers>? users) {
     if (users == null || users.isEmpty) {
       _userBox = [];
     } else {
       for (int i = 0; i < users.length; i++) {
         _userBox.add(UserBox(
+            userid: users[i].colUserId,
             name: users[i].colErabiltzaileIzena,
             surname: users[i].colErabiltzaileAbizena,
             imageUrl:
-                'https://upload.wikimedia.org/wikipedia/commons/6/60/Scarlett_Johansson_by_Gage_Skidmore_2_%28cropped%29.jpg'));
+                'https://upload.wikimedia.org/wikipedia/commons/6/60/Scarlett_Johansson_by_Gage_Skidmore_2_%28cropped%29.jpg',
+                ));
       }
     }
   }
@@ -63,7 +66,12 @@ class _UserListState extends State<UserList> {
                         controller: _userScrollController,
                         itemCount: _userBox.length,
                         itemBuilder: ((context, index) {
-                          return (_userBox[index]);
+                          return Row(
+                            children: 
+                            [
+                              (_userBox[index]),
+                            ],
+                          );
                         })),
                   ),
             UserListButtons(),

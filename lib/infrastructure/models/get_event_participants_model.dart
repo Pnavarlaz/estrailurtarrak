@@ -9,20 +9,24 @@ GetEventParticipants getEventParticipantsFromJson(String str) => GetEventPartici
 String getEventParticipantsToJson(GetEventParticipants data) => json.encode(data.toJson());
 
 class GetEventParticipants {
+    final List<Participant> nonparticipants;
     final List<Participant> observers;
     final List<Participant> participants;
 
     GetEventParticipants({
+        required this.nonparticipants,
         required this.observers,
         required this.participants,
     });
 
     factory GetEventParticipants.fromJson(Map<String, dynamic> json) => GetEventParticipants(
+        nonparticipants: List<Participant>.from(json["nonparticipants"].map((x) => Participant.fromJson(x))),
         observers: List<Participant>.from(json["observers"].map((x) => Participant.fromJson(x))),
         participants: List<Participant>.from(json["participants"].map((x) => Participant.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
+        "nonparticipants": List<dynamic>.from(nonparticipants.map((x) => x.toJson())),
         "observers": List<dynamic>.from(observers.map((x) => x.toJson())),
         "participants": List<dynamic>.from(participants.map((x) => x.toJson())),
     };

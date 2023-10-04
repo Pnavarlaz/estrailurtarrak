@@ -107,13 +107,13 @@ class ApiService {
     return null;
   }
 
-  Future<(List<UserBox>, List<UserBox>)> getEventParticipants(
+  Future<(List<UserBox>, List<UserBox>,List<Participant>)> getEventParticipants(
       int eventID) async {
     final response = await _dio
         .get(baseUrl + eventuser, queryParameters: {"eventID": eventID});
     final getEventParticipant = GetEventParticipants.fromJson(response.data);
     userProvider.updateUsers(getEventParticipant);
-    return (userProvider.participantList, userProvider.spectatorList);
+    return (userProvider.participantList, userProvider.spectatorList, userProvider.nonparticipantList);
   }
 
   Future<bool> addNewEvent(String eventName, String eventLocation,

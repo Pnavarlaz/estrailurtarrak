@@ -1,4 +1,6 @@
 import 'package:estrailurtarrak/helpers/api_calls.dart';
+import 'package:estrailurtarrak/infrastructure/models/get_event_participants_model.dart';
+import 'package:estrailurtarrak/presentation/providers/screens/users/add_participants.dart';
 import 'package:estrailurtarrak/presentation/users/user_box.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/gradient_borders.dart';
@@ -18,6 +20,8 @@ class EventDetails extends StatefulWidget {
 class _EventDetailsState extends State<EventDetails> {
   late List<UserBox> _participantList;
   late List<UserBox> _observerList;
+  List<Participant> _nonparticipantList = [];
+
   bool answerReceived = false;
   @override
   void initState() {
@@ -28,12 +32,14 @@ class _EventDetailsState extends State<EventDetails> {
   void _getData() async {
     late List<UserBox> _intparticipantList;
     late List<UserBox> _intobserverList;
-    (_intparticipantList, _intobserverList) =
+    late List<Participant> _intnonparticipantList;
+    (_intparticipantList, _intobserverList, _intnonparticipantList) =
         await ApiService().getEventParticipants(widget.eventID);
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
           answerReceived = true;
           _participantList = _intparticipantList;
           _observerList = _intobserverList;
+          _nonparticipantList = _intnonparticipantList;
         }));
   }
 
@@ -58,24 +64,25 @@ class _EventDetailsState extends State<EventDetails> {
                   // ),
                   const SizedBox(height: 20),
                   Expanded(
-                    child: 
-                    (false == answerReceived) ?
-                    const Center(
-                        child: CircularProgressIndicator(),
-                      ) :
-                    Column(children: [
-                      ParticipantInformation(
-                        participantType: ParticipantType.participant,
-                        title: 'Partaideak',
-                        participantsAnswer: _participantList,
-                      ),
-                      SizedBox(height: 20),
-                      ParticipantInformation(
-                        participantType: ParticipantType.spectator,
-                        title: 'Animatzaileak',
-                        participantsAnswer: _observerList,
-                      ),
-                    ]),
+                    child: (false == answerReceived)
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Column(children: [
+                            ParticipantInformation(
+                              participantType: ParticipantType.participant,
+                              title: 'Partaideak',
+                              participantsAnswer: _participantList,
+                              nonparticipantAnswer: _nonparticipantList,
+                            ),
+                            SizedBox(height: 20),
+                            ParticipantInformation(
+                              participantType: ParticipantType.spectator,
+                              title: 'Animatzaileak',
+                              participantsAnswer: _observerList,
+                              nonparticipantAnswer: _nonparticipantList,
+                            ),
+                          ]),
                   )
                 ],
               ))),
@@ -87,11 +94,14 @@ class ParticipantInformation extends StatelessWidget {
   final String title;
   final ParticipantType participantType;
   final List<UserBox>? participantsAnswer;
+  final List<Participant>? nonparticipantAnswer;
+
   const ParticipantInformation({
     super.key,
     required this.title,
     required this.participantType,
     required this.participantsAnswer,
+    required this.nonparticipantAnswer,
   });
 
   @override
@@ -119,7 +129,8 @@ class ParticipantInformation extends StatelessWidget {
       height: 300,
       child: Column(
         children: [
-          ParticipantInformationHeader(title: title),
+          ParticipantInformationHeader(
+              title: title, nonparticipantAnswer: nonparticipantAnswer, participantType: participantType,),
           Expanded(
               child: ListView.builder(
             itemCount: participantsAnswer!.length,
@@ -134,9 +145,14 @@ class ParticipantInformation extends StatelessWidget {
 }
 
 class ParticipantInformationHeader extends StatelessWidget {
+  final List<Participant>? nonparticipantAnswer;
+  final ParticipantType participantType;
+
   const ParticipantInformationHeader({
     super.key,
     required this.title,
+    required this.nonparticipantAnswer,
+    required this.participantType,
   });
 
   final String title;
@@ -155,7 +171,17 @@ class ParticipantInformationHeader extends StatelessWidget {
                     RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ))),
-            onPressed: () {},
+            onPressed: () {
+              if (nonparticipantAnswer != null) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddParticipants(
+                          nonparticipantAnswer: nonparticipantAnswer!,
+                          participantType: participantType,),
+                    ));
+              }
+            },
             child: const Icon(
               Icons.add,
               size: 30,
