@@ -63,10 +63,10 @@ class _UserBoxState extends State<UserBox> {
     Widget selectedIcon = widget.selectable
         ? (widget.isSelected
             ? Icon(
-                Icons.circle_rounded,
+                Icons.check_box_outlined,
                 color: Color.fromARGB(0x90, 0x97, 0x47, 0xFF),
               )
-            : Icon(Icons.circle_outlined,
+            : Icon(Icons.check_box_outline_blank_outlined,
                 color: Color.fromARGB(
                   0x90,
                   0x97,

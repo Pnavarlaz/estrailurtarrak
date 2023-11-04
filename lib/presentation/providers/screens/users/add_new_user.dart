@@ -69,12 +69,21 @@ class _AddNewUserState extends State<AddNewUser> {
               children: [
                 Expanded(child: SizedBox()),
                 ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_nameTextController.text.isNotEmpty &&
                           _surnameTextController.text.isNotEmpty) {
-                        ApiService().addNewUser(
+                        bool userAdded = await ApiService().addNewUser(
                             _nameTextController.text,
                             _surnameTextController.text);
+                        if (userAdded) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Erabiltzailea gehitu da')));
+                              Navigator.pop(context, true);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Arazo bat gertatu da')));
+                          Navigator.pop(context, false);
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(

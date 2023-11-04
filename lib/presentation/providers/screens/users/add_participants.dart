@@ -1,12 +1,22 @@
+import 'package:estrailurtarrak/helpers/api_calls.dart';
 import 'package:estrailurtarrak/infrastructure/models/get_event_participants_model.dart';
 import 'package:estrailurtarrak/presentation/providers/screens/event/event_details.dart';
 import 'package:estrailurtarrak/presentation/users/user_box.dart';
 import 'package:flutter/material.dart';
 
+enum ParticipantAction { ADD, DELETE }
+
 class AddParticipants extends StatefulWidget {
   final List<Participant> nonparticipantAnswer;
   final ParticipantType participantType;
-  const AddParticipants({super.key, required this.nonparticipantAnswer, required this.participantType});
+  final ParticipantAction participantAction;
+  final int eventID;
+  const AddParticipants(
+      {super.key,
+      required this.nonparticipantAnswer,
+      required this.participantType,
+      required this.participantAction,
+      required this.eventID});
 
   @override
   State<AddParticipants> createState() => _AddParticipantsState();
@@ -21,7 +31,7 @@ class _AddParticipantsState extends State<AddParticipants> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Partehartzailea gehitu'),
+        title: (ParticipantAction.ADD == widget.participantAction)  ?Text('Partehartzailea gehitu') : Text('Partehartzailea ezabatu'),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -57,7 +67,11 @@ class _AddParticipantsState extends State<AddParticipants> {
                           )),
                         );
                       }))),
-              AddParticipantBottomRow(),
+              AddParticipantBottomRow(
+                  participantType: widget.participantType,
+                  eventID: widget.eventID,
+                  userID: selectedUID,
+                  participantAction: widget.participantAction),
             ],
           ),
         ),
@@ -67,8 +81,17 @@ class _AddParticipantsState extends State<AddParticipants> {
 }
 
 class AddParticipantBottomRow extends StatelessWidget {
+  final ParticipantType participantType;
+  final int eventID;
+  final int userID;
+  final ParticipantAction participantAction;
+
   const AddParticipantBottomRow({
     super.key,
+    required this.participantType,
+    required this.eventID,
+    required this.userID,
+    required this.participantAction,
   });
 
   @override
@@ -82,8 +105,25 @@ class AddParticipantBottomRow extends StatelessWidget {
                     RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ))),
-            onPressed: () {},
-            child: Text('Partehartzailea gehitu'))
+            onPressed: () async {
+              if (participantAction == ParticipantAction.ADD) {
+                bool? userAdded = await ApiService()
+                    .addParticipantToEvent(participantType, eventID, userID);
+                if (userAdded == null || userAdded == false) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Arazo bat gertatu da')));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Erabiltzailea gehitu da')));
+                }
+              } else {
+
+              }
+              //Navigator.pop(context);
+            },
+            child: (participantAction == ParticipantAction.ADD)
+                ? Text('Partehartzailea gehitu')
+                : Text('Partehartzailea kendu'))
       ],
     );
   }

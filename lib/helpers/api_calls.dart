@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:estrailurtarrak/infrastructure/models/get_event_participants_model.dart';
+import 'package:estrailurtarrak/presentation/providers/screens/event/event_details.dart';
 import 'package:estrailurtarrak/presentation/providers/user_provider.dart';
 import 'package:estrailurtarrak/presentation/users/user_box.dart';
 import 'package:flutter/material.dart';
@@ -107,13 +108,17 @@ class ApiService {
     return null;
   }
 
-  Future<(List<UserBox>, List<UserBox>,List<Participant>)> getEventParticipants(
-      int eventID) async {
+  Future<(List<UserBox>, List<UserBox>, List<Participant>)>
+      getEventParticipants(int eventID) async {
     final response = await _dio
         .get(baseUrl + eventuser, queryParameters: {"eventID": eventID});
     final getEventParticipant = GetEventParticipants.fromJson(response.data);
     userProvider.updateUsers(getEventParticipant);
-    return (userProvider.participantList, userProvider.spectatorList, userProvider.nonparticipantList);
+    return (
+      userProvider.participantList,
+      userProvider.spectatorList,
+      userProvider.nonparticipantList
+    );
   }
 
   Future<bool> addNewEvent(String eventName, String eventLocation,
@@ -156,5 +161,23 @@ class ApiService {
       return _users;
     }
     return null;
+  }
+
+  Future<bool?> addParticipantToEvent(
+      ParticipantType vF_participantType, int vF_eventID, int vF_userID) async {
+    final int participantType =
+        (vF_participantType == ParticipantType.participant) ? 1 : 2;
+
+    final _queryParameters = {
+      "eventID": vF_eventID,
+      "userID": vF_userID,
+      "participationType": participantType,
+    };
+    final response =
+        await _dio.post(baseUrl + eventuser, queryParameters: _queryParameters);
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
   }
 }

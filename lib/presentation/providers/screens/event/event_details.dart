@@ -65,24 +65,26 @@ class _EventDetailsState extends State<EventDetails> {
                   const SizedBox(height: 20),
                   Expanded(
                     child: (false == answerReceived)
-                        ? const Center(
+                      ? const Center(
                             child: CircularProgressIndicator(),
-                          )
-                        : Column(children: [
-                            ParticipantInformation(
-                              participantType: ParticipantType.participant,
-                              title: 'Partaideak',
-                              participantsAnswer: _participantList,
-                              nonparticipantAnswer: _nonparticipantList,
-                            ),
-                            SizedBox(height: 20),
-                            ParticipantInformation(
-                              participantType: ParticipantType.spectator,
-                              title: 'Animatzaileak',
-                              participantsAnswer: _observerList,
-                              nonparticipantAnswer: _nonparticipantList,
-                            ),
-                          ]),
+                                                )
+                      : Column(children: [
+                          ParticipantInformation(
+                            participantType: ParticipantType.participant,
+                            title: 'Partaideak',
+                            participantsAnswer: _participantList,
+                            nonparticipantAnswer: _nonparticipantList,
+                            eventID: widget.eventID,
+                          ),
+                          SizedBox(height: 20),
+                          ParticipantInformation(
+                            participantType: ParticipantType.spectator,
+                            title: 'Animatzaileak',
+                            participantsAnswer: _observerList,
+                            nonparticipantAnswer: _nonparticipantList,
+                            eventID: widget.eventID,
+                          ),
+                        ]),
                   )
                 ],
               ))),
@@ -95,6 +97,7 @@ class ParticipantInformation extends StatelessWidget {
   final ParticipantType participantType;
   final List<UserBox>? participantsAnswer;
   final List<Participant>? nonparticipantAnswer;
+  final int eventID;
 
   const ParticipantInformation({
     super.key,
@@ -102,6 +105,7 @@ class ParticipantInformation extends StatelessWidget {
     required this.participantType,
     required this.participantsAnswer,
     required this.nonparticipantAnswer,
+    required this.eventID,
   });
 
   @override
@@ -130,7 +134,7 @@ class ParticipantInformation extends StatelessWidget {
       child: Column(
         children: [
           ParticipantInformationHeader(
-              title: title, nonparticipantAnswer: nonparticipantAnswer, participantType: participantType,),
+              title: title, nonparticipantAnswer: nonparticipantAnswer, participantType: participantType, eventID: eventID),
           Expanded(
               child: ListView.builder(
             itemCount: participantsAnswer!.length,
@@ -147,12 +151,14 @@ class ParticipantInformation extends StatelessWidget {
 class ParticipantInformationHeader extends StatelessWidget {
   final List<Participant>? nonparticipantAnswer;
   final ParticipantType participantType;
+  final int eventID;
 
   const ParticipantInformationHeader({
     super.key,
     required this.title,
     required this.nonparticipantAnswer,
     required this.participantType,
+    required this.eventID,
   });
 
   final String title;
@@ -178,15 +184,40 @@ class ParticipantInformationHeader extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => AddParticipants(
                           nonparticipantAnswer: nonparticipantAnswer!,
-                          participantType: participantType,),
+                          participantType: participantType,
+                          participantAction: ParticipantAction.ADD,
+                          eventID: eventID),
                     ));
               }
             },
             child: const Icon(
-              Icons.add,
-              size: 30,
+              Icons.person_add_alt_1_rounded,
               color: Color(0xFF9747FF),
-            ))
+            )),
+            SizedBox(width: 5,),
+            ElevatedButton(
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ))),
+            onPressed: () {
+              if (nonparticipantAnswer != null) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddParticipants(
+                          nonparticipantAnswer: nonparticipantAnswer!,
+                          participantType: participantType,
+                          participantAction: ParticipantAction.DELETE,
+                          eventID: eventID),
+                    ));
+              }
+            },
+            child: const Icon(
+              Icons.person_remove_alt_1_rounded,
+              color: Color(0xFF9747FF),
+            )),
       ],
     );
   }

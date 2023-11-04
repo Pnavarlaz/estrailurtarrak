@@ -66,8 +66,8 @@ class _EventListState extends State<EventList> {
               child: Column(children: [
                 _eventInformationBoxList.isEmpty
                     ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
+                            child: CircularProgressIndicator(),
+                                              )
                     : Expanded(
                         child: RefreshIndicator(
                           onRefresh: _getData,

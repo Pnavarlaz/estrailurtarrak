@@ -11,36 +11,20 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-  late List<GetUsers>? _users = [];
-  late List<UserBox> _userBox = [];
+  late List<GetUsers> _users = [];
+  late List<GetUsers> users = [];
+
   @override
   void initState() {
     super.initState();
     _getData();
   }
 
-
-  void _convertToUserBox(List<GetUsers>? users) {
-    if (users == null || users.isEmpty) {
-      _userBox = [];
-    } else {
-      for (int i = 0; i < users.length; i++) {
-        _userBox.add(UserBox(
-            userid: users[i].colUserId,
-            name: users[i].colErabiltzaileIzena,
-            surname: users[i].colErabiltzaileAbizena,
-            imageUrl:
-                'https://upload.wikimedia.org/wikipedia/commons/6/60/Scarlett_Johansson_by_Gage_Skidmore_2_%28cropped%29.jpg',
-                ));
-      }
-    }
-  }
-
   Future<void> _getData() async {
     _users = (await ApiService().getUsers())!;
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
-          _convertToUserBox(_users);
-        }));
+    setState(() {
+      users = _users;
+    });
   }
 
   @override
@@ -57,21 +41,21 @@ class _UserListState extends State<UserList> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           children: [
-            _userBox.isEmpty
+            users.isEmpty
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
                 : Expanded(
                     child: ListView.builder(
                         controller: _userScrollController,
-                        itemCount: _userBox.length,
+                        itemCount: users.length,
                         itemBuilder: ((context, index) {
-                          return Row(
-                            children: 
-                            [
-                              (_userBox[index]),
-                            ],
-                          );
+                          return (UserBox(
+                              userid: users[index].colUserId,
+                              name: users[index].colErabiltzaileIzena,
+                              surname: users[index].colErabiltzaileAbizena,
+                              imageUrl:
+                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxaMAuDlm9OC8CXkmZfYjYsICTL_nQ-f7wIw&usqp=CAU'));
                         })),
                   ),
             UserListButtons(),
@@ -121,9 +105,13 @@ class UserListButtons extends StatelessWidget {
                       RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
               ))),
-              onPressed: () {
-                Navigator.push(context,
+              onPressed: () async {
+                bool? result = await Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => AddNewUser()));
+                if(result != null && result)
+                {
+
+                }
               },
               child: Icon(Icons.person_add_alt_1)),
         ),
