@@ -117,13 +117,21 @@ class AddParticipantBottomRow extends StatelessWidget {
                       SnackBar(content: Text('Erabiltzailea gehitu da')));
                 }
               } else {
-
+                bool? userDeleted = await ApiService()
+                    .removeParticipantFromEvent(participantType, eventID, userID);
+                if (userDeleted == null || userDeleted == false) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Arazo bat gertatu da')));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Erabiltzailea ezabatu da')));
+                }
               }
               //Navigator.pop(context);
             },
             child: (participantAction == ParticipantAction.ADD)
                 ? Text('Partehartzailea gehitu')
-                : Text('Partehartzailea kendu'))
+                : Text('Partehartzailea ezabatu'))
       ],
     );
   }

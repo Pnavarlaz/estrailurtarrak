@@ -18,8 +18,8 @@ class EventDetails extends StatefulWidget {
 }
 
 class _EventDetailsState extends State<EventDetails> {
-  late List<UserBox> _participantList;
-  late List<UserBox> _observerList;
+  late List<Participant> _participantList;
+  late List<Participant> _observerList;
   List<Participant> _nonparticipantList = [];
 
   bool answerReceived = false;
@@ -30,8 +30,8 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   void _getData() async {
-    late List<UserBox> _intparticipantList;
-    late List<UserBox> _intobserverList;
+    late List<Participant> _intparticipantList;
+    late List<Participant> _intobserverList;
     late List<Participant> _intnonparticipantList;
     (_intparticipantList, _intobserverList, _intnonparticipantList) =
         await ApiService().getEventParticipants(widget.eventID);
@@ -95,7 +95,7 @@ class _EventDetailsState extends State<EventDetails> {
 class ParticipantInformation extends StatelessWidget {
   final String title;
   final ParticipantType participantType;
-  final List<UserBox>? participantsAnswer;
+  final List<Participant>? participantsAnswer;
   final List<Participant>? nonparticipantAnswer;
   final int eventID;
 
@@ -134,12 +134,15 @@ class ParticipantInformation extends StatelessWidget {
       child: Column(
         children: [
           ParticipantInformationHeader(
-              title: title, nonparticipantAnswer: nonparticipantAnswer, participantType: participantType, eventID: eventID),
+              title: title,participantAnswer: participantsAnswer, nonparticipantAnswer: nonparticipantAnswer, participantType: participantType, eventID: eventID),
           Expanded(
               child: ListView.builder(
             itemCount: participantsAnswer!.length,
             itemBuilder: (context, index) {
-              return (participantsAnswer![index]);
+              return (UserBox(userid: participantsAnswer![index].colUserId, 
+                              name: participantsAnswer![index].colErabiltzaileIzena, 
+                              surname: participantsAnswer![index].colErabiltzaileAbizena, 
+                              imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHVvTOY1BR-T_roGOwEql-q9hFj5rLatYa5A&usqp=CAU"));
             },
           ))
         ],
@@ -149,6 +152,7 @@ class ParticipantInformation extends StatelessWidget {
 }
 
 class ParticipantInformationHeader extends StatelessWidget {
+  final List<Participant>? participantAnswer;
   final List<Participant>? nonparticipantAnswer;
   final ParticipantType participantType;
   final int eventID;
@@ -156,6 +160,7 @@ class ParticipantInformationHeader extends StatelessWidget {
   const ParticipantInformationHeader({
     super.key,
     required this.title,
+    required this.participantAnswer,
     required this.nonparticipantAnswer,
     required this.participantType,
     required this.eventID,
@@ -207,7 +212,7 @@ class ParticipantInformationHeader extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => AddParticipants(
-                          nonparticipantAnswer: nonparticipantAnswer!,
+                          nonparticipantAnswer: participantAnswer!,
                           participantType: participantType,
                           participantAction: ParticipantAction.DELETE,
                           eventID: eventID),

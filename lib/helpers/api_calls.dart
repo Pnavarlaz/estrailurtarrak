@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:estrailurtarrak/infrastructure/models/get_event_participants_model.dart';
 import 'package:estrailurtarrak/presentation/providers/screens/event/event_details.dart';
 import 'package:estrailurtarrak/presentation/providers/user_provider.dart';
-import 'package:estrailurtarrak/presentation/users/user_box.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -108,7 +107,7 @@ class ApiService {
     return null;
   }
 
-  Future<(List<UserBox>, List<UserBox>, List<Participant>)>
+  Future<(List<Participant>, List<Participant>, List<Participant>)>
       getEventParticipants(int eventID) async {
     final response = await _dio
         .get(baseUrl + eventuser, queryParameters: {"eventID": eventID});
@@ -180,4 +179,22 @@ class ApiService {
     }
     return false;
   }
+
+  Future<bool?> removeParticipantFromEvent(ParticipantType vF_participantType,
+      int vF_eventID, int vF_userID) async {
+    final int participantType =
+        (vF_participantType == ParticipantType.participant) ? 1 : 2;
+
+    final _queryParameters = {
+      "eventID": vF_eventID,
+      "userID": vF_userID,
+      "participationType": participantType,
+    };
+    final response =
+        await _dio.delete(baseUrl + eventuser, queryParameters: _queryParameters);
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+      }
 }
